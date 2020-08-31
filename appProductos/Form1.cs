@@ -30,15 +30,31 @@ namespace appProductos
             }
             catch (SqlException s)
             {
-                //Console.WriteLine(": {0}", s);
                 MessageBox.Show("Se ha encontrado el siguiente problema: " + s.ToString());
 
             }
 
         }
-        //Productos prod = new Productos();
         private void Form1_Load(object sender, EventArgs e)
         {
+            SqlConnection tstStartCon = new SqlConnection(cadenaConexion);
+
+            try
+            {
+                tstStartCon.Open();
+                MessageBox.Show("Se ha conectado correctamente \n");
+
+            }
+            catch (SqlException s)
+            {
+                //Console.WriteLine(": {0}", s);
+                MessageBox.Show("Se ha encontrado el siguiente problema: " + s.ToString());
+
+            }
+
+
+
+
             Productos prod = new Productos();
             dgvProductos.DataSource = prod.MostrarProductos();
         }
@@ -140,19 +156,119 @@ namespace appProductos
         private void button3_Click(object sender, EventArgs e)
         {
             Conexion conectar = new Conexion();
-            string query = "UPDATE Productos SET nombreProducto = @nombre, precioProducto = @precio,stockProducto = @stock,idCategoria=@categoria WHERE idProducto = @id";
-            SqlCommand command = new SqlCommand(query, conectar.aplicarCadena());
-            command.Parameters.AddWithValue("@nombre", textNombre.Text);
-            command.Parameters.AddWithValue("@precio", textPrecio.Text);
-            command.Parameters.AddWithValue("@stock", textStock.Text);
-            command.Parameters.AddWithValue("@categoria", textIdCategoria.Text);
-            command.Parameters.AddWithValue("@id", textIdProducto.Text);
+            if (textIdProducto.Text == "" && textIdCategoria.Text == "" && textNombre.Text == "" &&
+                textPrecio.Text == "" && textStock.Text == "")
+            {
+                MessageBox.Show("Los campos no deben estar vacios");
 
-            command.ExecuteNonQuery();
+            }
+            else if (textIdProducto.Text == "" | textIdCategoria.Text == "" && textNombre.Text != "" &&
+               textPrecio.Text != "" && textStock.Text != "")
+            {
+                MessageBox.Show("Los campos idProducto e idCategoria no deben estar vacios");
+
+            }
+            else if (textIdProducto.Text != "" && textIdCategoria.Text != "" && textNombre.Text != "" &&
+               textPrecio.Text == "" && textStock.Text == "")
+            {
+                string query1 = "UPDATE Productos SET nombreProducto = @nombre," +
+    "idCategoria=@categoria WHERE idProducto = @id";
+
+                SqlCommand command1 = new SqlCommand(query1, conectar.aplicarCadena());
+                command1.Parameters.AddWithValue("@nombre", textNombre.Text);
+                command1.Parameters.AddWithValue("@categoria", textIdCategoria.Text);
+                command1.Parameters.AddWithValue("@id", textIdProducto.Text);
+                try
+                {
+                    command1.ExecuteNonQuery();
+                }
+                catch (SqlException s)
+                {
+
+                    MessageBox.Show(s.ToString());
+
+                }
+            }
+            else if (textIdProducto.Text != "" && textIdCategoria.Text != "" && textNombre.Text == "" &&
+          textPrecio.Text == "" && textStock.Text != "")
+            {
+                string query1 = "UPDATE Productos SET stockProducto = @stock," +
+    "idCategoria=@categoria WHERE idProducto = @id";
+
+                SqlCommand command1 = new SqlCommand(query1, conectar.aplicarCadena());
+                command1.Parameters.AddWithValue("@stock", textStock.Text);
+                command1.Parameters.AddWithValue("@categoria", textIdCategoria.Text);
+                command1.Parameters.AddWithValue("@id", textIdProducto.Text);
+                try
+                {
+                    command1.ExecuteNonQuery();
+                }
+                catch (SqlException s)
+                {
+
+                    MessageBox.Show(s.ToString());
+
+                }
+            }
+            else if (textIdProducto.Text != "" && textIdCategoria.Text != "" && textNombre.Text == "" &&
+         textPrecio.Text != "" && textStock.Text == "")
+            {
+                string query1 = "UPDATE Productos SET precioProducto = @precio," +
+    "idCategoria=@categoria WHERE idProducto = @id";
+
+                SqlCommand command1 = new SqlCommand(query1, conectar.aplicarCadena());
+                command1.Parameters.AddWithValue("@precio", textPrecio.Text);
+                command1.Parameters.AddWithValue("@categoria", textIdCategoria.Text);
+                command1.Parameters.AddWithValue("@id", textIdProducto.Text);
+                try
+                {
+                    command1.ExecuteNonQuery();
+                }
+                catch (SqlException s)
+                {
+
+                    MessageBox.Show(s.ToString());
+
+                }
+            }
+
+
+            else
+            {
+                string query = "UPDATE Productos SET nombreProducto = @nombre, precioProducto = @precio," +
+                "stockProducto = @stock,idCategoria=@categoria WHERE idProducto = @id";
+
+
+
+
+
+                SqlCommand command = new SqlCommand(query, conectar.aplicarCadena());
+                command.Parameters.AddWithValue("@nombre", textNombre.Text);
+                command.Parameters.AddWithValue("@precio", textPrecio.Text);
+                command.Parameters.AddWithValue("@stock", textStock.Text);
+                command.Parameters.AddWithValue("@categoria", textIdCategoria.Text);
+                command.Parameters.AddWithValue("@id", textIdProducto.Text);
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException s)
+                {
+
+                    MessageBox.Show(s.ToString());
+                    MessageBox.Show("Inserte idProducto e idCategoria para realizar modificaciones");
+
+                }
+            }
+
+
+
+
+            
             conectar.Close();
             Productos prod = new Productos();
             dgvProductos.DataSource = prod.MostrarProductos();
-            MessageBox.Show("Modificado Correctamente");
+            //MessageBox.Show("Modificado Correctamente");
 
 
 
