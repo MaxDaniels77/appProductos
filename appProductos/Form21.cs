@@ -86,17 +86,28 @@ namespace appProductos
         }
 
         private void button3_Click(object sender, EventArgs e)
-        {
-            Conexion conectar = new Conexion();
-            string query = "UPDATE Categorias SET nombreCategoria = @nombreCategoria WHERE idCategoria = @id";
-            SqlCommand command = new SqlCommand(query, conectar.aplicarCadena());
-            command.Parameters.AddWithValue("@nombreCategoria", textNombreCategoria.Text);
-            command.Parameters.AddWithValue("@id", textIdCategoria.Text);
-            command.ExecuteNonQuery();
-            Categorias prod = new Categorias();
-            dgvCategorias.DataSource = prod.MostrarCategorias();
-            MessageBox.Show("Modificado Correctamente");
-            conectar.Close();
+        {   if (textIdCategoria.Text == "" && textNombreCategoria.Text!="")
+            {
+                MessageBox.Show("El campo idCategoria no puede estar vacio");
+
+            }
+
+            else if(textIdCategoria.Text == "" && textNombreCategoria.Text == "")
+            {
+                
+            }else
+            {
+                Conexion conectar = new Conexion();
+                string query = "UPDATE Categorias SET nombreCategoria = @nombreCategoria WHERE idCategoria = @id";
+                SqlCommand command = new SqlCommand(query, conectar.aplicarCadena());
+                command.Parameters.AddWithValue("@nombreCategoria", textNombreCategoria.Text);
+                command.Parameters.AddWithValue("@id", textIdCategoria.Text);
+                command.ExecuteNonQuery();
+                Categorias prod = new Categorias();
+                dgvCategorias.DataSource = prod.MostrarCategorias();
+                MessageBox.Show("Modificado Correctamente");
+                conectar.Close();
+            }
 
         }
     }
